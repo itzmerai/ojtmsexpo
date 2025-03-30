@@ -11,9 +11,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sansai.OJTSTUDENTSYSTEM"
     },
     "web": {
       "bundler": "metro",
@@ -34,6 +35,12 @@
       "eas": {
         "projectId": "5750b358-0be1-4d30-90ee-fc55ec955067"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/5750b358-0be1-4d30-90ee-fc55ec955067"
     }
   }
 }
