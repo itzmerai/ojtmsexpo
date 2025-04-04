@@ -143,7 +143,7 @@ export default function HomeScreen() {
               <Image source={getProfileImage()} style={styles.loggo} />
             </TouchableOpacity>
             <Text style={styles.greetingTextt}>
-              Hello there,{"\n"}
+              Helloo there,{"\n"}
               <Text style={styles.firstNameText}>
                 {studentDetails.firstName}! 👋
               </Text>
