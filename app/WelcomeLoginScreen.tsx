@@ -80,7 +80,7 @@ export default function WelcomeLoginScreen() {
               <Icon name="account" size={20} color="#888" style={styles.icon} />
               <TextInput
                 style={styles.input}
-                placeholder="Enter your school ID"
+                placeholder="Enter your School ID"
                 placeholderTextColor="#999"
                 value={username}
                 onChangeText={setUsername}
@@ -165,14 +165,14 @@ const styles = StyleSheet.create({
   },
   ojtLogo: {
     width: 350, // Adjust size as needed
-    height: 100,
+    height: 170,
     position: "absolute",
-    top: "25%", // Adjust positioning to ensure it appears above welcomeimage
+    top: "5%", // Adjust positioning to ensure it appears above welcomeimage
     zIndex: 2,
   },
   backButton: {
     position: "absolute",
-    top: 50,
+    top: 20,
     left: 20,
     padding: 10,
     zIndex: 1,
@@ -192,18 +192,18 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "700",
+    fontSize: 20,
     color: "#0b6477",
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 20,
+    fontFamily: "MontserratBold",
   },
   label: {
     fontSize: 16,
     color: "#444",
     marginBottom: 8,
     marginLeft: 5,
-    fontWeight: "500",
+    fontFamily: "MontserratRegular",
   },
   inputContainer: {
     flexDirection: "row",
@@ -221,8 +221,9 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 50,
-    fontSize: 16,
+    fontSize: 14,
     color: "#333",
+    fontFamily: "MontserratRegular",
   },
   eyeIcon: {
     padding: 10,
@@ -241,7 +242,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#FFF",
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "MontserratSemiBold",
+
     textAlign: "center",
   },
   footerContainer: {
@@ -252,6 +254,7 @@ const styles = StyleSheet.create({
     color: "#999",
     textAlign: "center",
     lineHeight: 18,
+    fontFamily: "MontserratRegular",
   },
   fullScreenButton: {
     flex: 1,

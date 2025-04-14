@@ -3,12 +3,32 @@ import React, { useState } from "react";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import TabBar from "@/components/TabBar";
 import Profile from "../Sidebar/Profile";
+import {
+  useFonts,
+  Montserrat_400Regular,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+} from "@expo-google-fonts/montserrat";
+import { ActivityIndicator, View } from "react-native";
 
 export default function TabLayout() {
   const [isProfileVisible, setIsProfileVisible] = useState(false);
+  const [fontsLoaded] = useFonts({
+    MontserratRegular: Montserrat_400Regular,
+    MontserratSemiBold: Montserrat_600SemiBold,
+    MontserratBold: Montserrat_700Bold,
+  });
 
   const openProfile = () => setIsProfileVisible(true);
   const closeProfile = () => setIsProfileVisible(false);
+
+  if (!fontsLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <>
@@ -31,7 +51,7 @@ export default function TabLayout() {
           listeners={{
             tabPress: () => closeProfile(),
           }}
-          initialParams={{ openProfile, setIsProfileVisible }} // Pass both functions
+          initialParams={{ openProfile, setIsProfileVisible }}
         />
         <Tabs.Screen
           name="upload"

@@ -57,10 +57,10 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "MontserratBold", // Added MontserratBold font
     color: "#fff",
     textAlign: "center",
-    flex: 1, // To center the title
+    flex: 1,
   },
 });
 

@@ -190,6 +190,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#0b9ca7",
     marginBottom: 5,
+    fontFamily: "MontserratBold",
   },
   input: {
     fontSize: 16,
@@ -199,6 +200,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     backgroundColor: "#f9f9f9",
+    fontFamily: "MontserratRegular",
   },
   rowContainer: {
     flexDirection: "row",

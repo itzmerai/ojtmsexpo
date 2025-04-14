@@ -143,7 +143,7 @@ export default function HomeScreen() {
               <Image source={getProfileImage()} style={styles.loggo} />
             </TouchableOpacity>
             <Text style={styles.greetingTextt}>
-              Helloo there,{"\n"}
+              Hellooo,{"\n"}
               <Text style={styles.firstNameText}>
                 {studentDetails.firstName}! 👋
               </Text>
@@ -247,14 +247,15 @@ const styles = StyleSheet.create({
     color: "#fff",
     flex: 1,
     marginLeft: 10,
+    fontFamily: "MontserratRegular",
   },
   firstNameText: {
-    fontWeight: "bold",
+    fontFamily: "MontserratSemiBold",
     fontSize: 18,
     color: "#fff",
   },
   notificationIconContainer: {
-    bottom: 6.5,
+    bottom: 4.2,
     marginLeft: 10,
   },
   searchContainer: {
@@ -267,7 +268,8 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
   searchPlaceholder: {
-    fontSize: 16,
+    fontSize: 14,
+    fontFamily: "MontserratRegular",
   },
   overviewContainer: {
     alignItems: "flex-start",
@@ -278,12 +280,13 @@ const styles = StyleSheet.create({
   },
   overviewText: {
     fontSize: 19,
-    fontWeight: "bold",
+    fontFamily: "MontserratBold",
     color: "#000",
     marginLeft: 5,
   },
   texthours: {
-    fontSize: 12,
+    fontSize: 9,
+    fontFamily: "MontserratSemiBold",
   },
   horizontalScroll: {
     flexDirection: "row",
@@ -300,13 +303,14 @@ const styles = StyleSheet.create({
   },
   timeNumber: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "MontserratSemiBold",
     color: "#000",
     top: 6,
   },
   timeLabel: {
     fontSize: 17,
     color: "#000",
+    fontFamily: "MontserratRegular",
   },
   colorBar: {
     height: 5,
@@ -321,7 +325,8 @@ const styles = StyleSheet.create({
   },
   exploreText: {
     fontSize: 19,
-    fontWeight: "bold",
+    fontFamily: "MontserratBold",
+
     color: "#000",
   },
   overlay: {

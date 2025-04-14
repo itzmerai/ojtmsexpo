@@ -11,7 +11,12 @@ import {
   Dimensions,
   Modal,
 } from "react-native";
-import { Ionicons, Entypo, Octicons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  Entypo,
+  Octicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { useRouter } from "expo-router"; // Import useRouter from expo-router
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Config from "@/config";
@@ -177,7 +182,15 @@ const Profile: React.FC<ProfileProps> = ({ slideAnim, onClose }) => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Text style={styles.logoutButtonText}>Log Out</Text>
+            <View style={styles.buttonContent}>
+              <MaterialCommunityIcons
+                name="logout"
+                size={20}
+                color="red" // Changed to white to match text
+                style={styles.logoutIcon}
+              />
+              <Text style={styles.logoutButtonText}>Log Out</Text>
+            </View>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -270,12 +283,13 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "MontserratBold",
     color: "#fff", // Ensure text is visible on the colored background
   },
   id: {
     fontSize: 15,
     color: "#eee", // Lighter color for visibility
+    fontFamily: "MontserratSemiBold",
   },
   editIcon: {
     position: "absolute", // Position the edit icon absolutely
@@ -296,21 +310,31 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 18,
     color: "#0b9ca7",
+    fontFamily: "MontserratRegular",
   },
   logoutButton: {
     backgroundColor: "#0b9ca7",
     padding: 13,
     borderRadius: 10,
     alignItems: "center",
+    justifyContent: "center", // Added to center content vertically
     marginTop: 50,
-    width: "50%",
-    height: "23%",
+    width: "60%",
+    height: 50, // Changed from percentage to fixed height for better control
     alignSelf: "center",
     elevation: 10,
+  },
+  logoutIcon: {},
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   logoutButtonText: {
     color: "white",
     fontSize: 18,
+    fontFamily: "MontserratSemiBold",
+    marginLeft: 8, // Added space between icon and text
   },
   centeredView: {
     flex: 1,
@@ -336,13 +360,14 @@ const styles = StyleSheet.create({
   },
   modalTopText: {
     textAlign: "center",
-    fontWeight: "bold",
+    fontFamily: "MontserratBold",
     fontSize: 20,
     bottom: 10,
   },
   modalText: {
-    marginBottom: 10,
+    marginBottom: 3,
     textAlign: "center",
+    fontFamily: "MontserratRegular",
   },
   modalButtons: {
     flexDirection: "row",
@@ -357,14 +382,16 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: "#0b9ca7",
     fontSize: 16,
+    fontFamily: "MontserratSemiBold",
   },
   yesButton: {
     padding: 10,
     borderRadius: 5,
   },
   yesButtonText: {
-    color: "#ff9999",
+    color: "red",
     fontSize: 16,
+    fontFamily: "MontserratSemiBold",
   },
   horizontalLine: {
     borderBottomColor: "#ccc", // Light gray color for the line

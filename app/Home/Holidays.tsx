@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
   holidayButtonText: {
     fontSize: 16,
     color: "#0b9ca7",
+    fontFamily: "MontserratSemiBold",
   },
   holidayButtonTextPressed: {
     color: "#fff", // Change text color when pressed
@@ -185,12 +186,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   holidayName: {
-    fontSize: 14,
+    fontSize: 13,
     color: "#000",
+    fontFamily: "MontserratRegular",
   },
   holidayDate: {
-    fontSize: 14,
+    fontSize: 13,
     color: "#FF7F7F", // Updated color for the date
+    fontFamily: "MontserratRegular",
   },
 });
 

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "OJTSTUDENTSYSTEM",
+    "name": "OJTMS",
     "slug": "OJTSTUDENTSYSTEM",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
+        "foregroundImage": "./assets/images/ficon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.sansai.OJTSTUDENTSYSTEM",

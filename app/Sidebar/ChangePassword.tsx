@@ -233,10 +233,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     paddingLeft: 0,
+    fontFamily: "MontserratRegular",
   },
   title: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontFamily: "MontserratBold",
+
     marginBottom: 15,
     textAlign: "center",
     color: "#0b6477",
@@ -247,6 +249,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 1,
     bottom: 6,
+    fontFamily: "MontserratRegular",
   },
   Screen: {
     flex: 1,
@@ -269,6 +272,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     textAlign: "center",
+    fontFamily: "MontserratSemiBold",
   },
   welcomeContainer: {
     justifyContent: "center",

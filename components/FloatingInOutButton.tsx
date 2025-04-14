@@ -16,7 +16,7 @@ import {
 } from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import Config from "../config"; // Ensure this is set correctly
+import Config from "../config";
 
 const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
   onPress,
@@ -24,19 +24,17 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
   const [isTimerOn, setIsTimerOn] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [studentId, setStudentId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const scaleValue = new Animated.Value(1);
   const rotateValue = new Animated.Value(0);
   const floatValue = new Animated.Value(0);
 
-  // Fetch Student ID when component mounts
   useEffect(() => {
     const loadInitialState = async () => {
       try {
         const storedId = await AsyncStorage.getItem("student_id");
         if (storedId) {
           setStudentId(storedId);
-
-          // Load timer state for this student
           const timerState = await AsyncStorage.getItem(
             `timerState_${storedId}`
           );
@@ -49,6 +47,7 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
 
     loadInitialState();
   }, []);
+
   useEffect(() => {
     const saveTimerState = async () => {
       if (studentId) {
@@ -66,7 +65,6 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
     saveTimerState();
   }, [isTimerOn, studentId]);
 
-  // Rotating Gradient Animation
   useEffect(() => {
     const rotateAnimation = Animated.loop(
       Animated.timing(rotateValue, {
@@ -81,7 +79,6 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
     return () => rotateAnimation.stop();
   }, [rotateValue]);
 
-  // Floating Animation
   useEffect(() => {
     const floatAnimation = Animated.loop(
       Animated.sequence([
@@ -109,18 +106,19 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
   };
 
   const handleConfirm = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setIsModalVisible(false); // Close modal immediately
+
     try {
-      // Request location permissions
       const { status } = await requestForegroundPermissionsAsync();
       if (status !== "granted") {
         console.log("Location permission denied");
-        setIsModalVisible(false);
         return;
       }
 
-      // Get user's current location
       const location = await getCurrentPositionAsync({});
-      if (!location || !location.coords) {
+      if (!location?.coords) {
         console.error("Failed to retrieve location");
         return;
       }
@@ -133,19 +131,14 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
         return;
       }
 
-      // Send data to backend
-      const response = await axios.post(`${Config.API_BASE_URL}/student/time`, {
+      await axios.post(`${Config.API_BASE_URL}/student/time`, {
         studentId: studentId,
         scanTime: new Date().toISOString(),
         address: `${latitude}, ${longitude}`,
       });
 
-      console.log("Server Response:", response.data);
-
-      // Toggle the timer state
       setIsTimerOn((prev) => !prev);
 
-      // Trigger scaling animation
       Animated.sequence([
         Animated.timing(scaleValue, {
           toValue: 0.8,
@@ -159,10 +152,11 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
         }),
       ]).start();
 
-      setIsModalVisible(false);
-      onPress(); // Call parent function if needed
+      onPress();
     } catch (error) {
       console.error("Error getting location or sending data:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -182,7 +176,6 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
 
   return (
     <>
-      {/* Floating Button */}
       <Animated.View
         style={[
           styles.floatingButtonContainer,
@@ -213,7 +206,6 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
         </TouchableOpacity>
       </Animated.View>
 
-      {/* Confirmation Modal */}
       <Modal visible={isModalVisible} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -224,11 +216,18 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
             </Text>
             <View style={styles.modalButtonsContainer}>
               <TouchableHighlight
-                style={[styles.modalButton, styles.yesButton]}
+                style={[
+                  styles.modalButton,
+                  styles.yesButton,
+                  isSubmitting && styles.disabledButton,
+                ]}
                 onPress={handleConfirm}
                 underlayColor="#DDDDDD"
+                disabled={isSubmitting}
               >
-                <Text style={styles.buttonText}>Yes</Text>
+                <Text style={styles.buttonText}>
+                  {isSubmitting ? "Submitting..." : "Yes"}
+                </Text>
               </TouchableHighlight>
               <TouchableHighlight
                 style={[styles.modalButton, styles.noButton]}
@@ -245,7 +244,6 @@ const FloatingInOutButton: React.FC<{ onPress: () => void }> = ({
   );
 };
 
-// Add your styles here
 const styles = StyleSheet.create({
   floatingButtonContainer: {
     position: "absolute",
@@ -269,7 +267,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   floatingButton: {
-    width: 70, // Adjust based on icon size
+    width: 70,
     height: 70,
     borderRadius: 35,
     backgroundColor: "#0b9ca7",
@@ -298,6 +296,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 20,
     textAlign: "center",
+    fontFamily: "MontserratRegular",
   },
   modalButtonsContainer: {
     flexDirection: "row",
@@ -320,6 +319,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#ffffff",
     fontSize: 16,
+    fontFamily: "MontserratSemiBold",
+  },
+  disabledButton: {
+    backgroundColor: "#7fbdc4",
+    opacity: 0.7,
   },
 });
 

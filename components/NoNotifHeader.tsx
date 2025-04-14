@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextStyle,
+} from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
 
 // Define the props for the Header component
@@ -7,16 +13,18 @@ interface HeaderProps {
   title: string; // Title to display in the header
   showBackButton?: boolean; // Whether to show the back button
   onBackPress?: () => void; // Function to call when the back button is pressed
+  titleStyle?: TextStyle; // Optional custom style for the title
 }
 
 const NoNotifHeader: React.FC<HeaderProps> = ({
   title,
   showBackButton = false,
   onBackPress,
+  titleStyle,
 }) => {
   return (
     <View style={styles.headerBackground}>
-      <View style={styles.headerr}>
+      <View style={styles.header}>
         {/* Back Button (Chevron Left) */}
         {showBackButton && (
           <TouchableOpacity onPress={onBackPress}>
@@ -29,8 +37,8 @@ const NoNotifHeader: React.FC<HeaderProps> = ({
           </TouchableOpacity>
         )}
 
-        {/* Title */}
-        <Text style={styles.headerTitle}>{title}</Text>
+        {/* Title with custom style support */}
+        <Text style={[styles.headerTitle, titleStyle]}>{title}</Text>
       </View>
     </View>
   );
@@ -42,7 +50,7 @@ const styles = StyleSheet.create({
     paddingVertical: 25,
     paddingHorizontal: 15,
   },
-  headerr: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -52,10 +60,11 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+
     color: "#fff",
     textAlign: "center",
     flex: 1, // To center the title
+    fontFamily: "MontserratBold", // Added default font
   },
 });
 

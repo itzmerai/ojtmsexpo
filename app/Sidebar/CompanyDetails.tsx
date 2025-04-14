@@ -110,6 +110,25 @@ const CompanyDetails: React.FC = () => {
             editable={false}
           />
         </View>
+
+        {/* Supervisor Email */}
+        <View style={styles.detailItem}>
+          <Text style={styles.label}>Supervisor Email</Text>
+          <TextInput
+            style={styles.input}
+            value={studentDetails?.company_email || "supervisor@company.com"}
+            editable={false}
+          />
+        </View>
+
+        {/* Company Description */}
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.descriptionTitle}>About the Company</Text>
+          <Text style={styles.descriptionText}>
+            {studentDetails?.company_description ||
+              "This company is a leading organization in its field, providing excellent opportunities for interns to learn and grow professionally.  With a strong commitment to innovation and employee development, it offers a dynamic work environment that fosters creativity and collaboration."}
+          </Text>
+        </View>
       </ScrollView>
     </View>
   );
@@ -130,12 +149,12 @@ const styles = StyleSheet.create({
   },
   detailItem: {
     marginBottom: 18,
-    top: 2,
   },
   label: {
     fontSize: 16,
     color: "#0b9ca7",
     marginBottom: 5,
+    fontFamily: "MontserratSemiBold",
   },
   input: {
     fontSize: 16,
@@ -145,6 +164,27 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     backgroundColor: "#f9f9f9",
+    fontFamily: "MontserratRegular",
+  },
+  descriptionContainer: {
+    marginTop: 25,
+    marginBottom: 30,
+    paddingHorizontal: 15,
+    alignItems: "center",
+  },
+  descriptionTitle: {
+    fontSize: 18,
+    color: "#0b9ca7",
+    marginBottom: 15,
+    fontFamily: "MontserratBold",
+    textAlign: "center",
+  },
+  descriptionText: {
+    fontSize: 14,
+    color: "#666",
+    lineHeight: 22,
+    textAlign: "center",
+    fontFamily: "MontserratRegular",
   },
 });
 

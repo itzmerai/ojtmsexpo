@@ -1,9 +1,17 @@
-import React, { useState } from "react";
-import { View, TextInput, StyleSheet, ScrollView, Text } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import Header from "@/components/Header";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Config from "@/config";
 
-// Define the type for the timesheet entry
 type TimesheetEntry = {
   date: string;
   morning: { in: string; out: string };
@@ -11,59 +19,79 @@ type TimesheetEntry = {
   totalHours: number;
 };
 
-// Define the type for the route parameters
 type RootStackParamList = {
-  SearchScreen: { timesheet: TimesheetEntry[] };
+  SearchScreen: undefined;
 };
 
-// Use the correct route type
 type SearchScreenRouteProp = RouteProp<RootStackParamList, "SearchScreen">;
 
 const SearchScreen = () => {
   const navigation = useNavigation();
   const route = useRoute<SearchScreenRouteProp>();
-  const { timesheet = [] } = route.params || {}; // Ensure timesheet always has a default value
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState<TimesheetEntry[]>(timesheet);
-  console.log("Received timesheet in SearchScreen:", timesheet);
-  console.log("Timesheet Length:", timesheet.length);
+  const [timesheet, setTimesheet] = useState<TimesheetEntry[]>([]);
+  const [filteredData, setFilteredData] = useState<TimesheetEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStudentTimesheet();
+  }, []);
+
+  const fetchStudentTimesheet = async () => {
+    try {
+      setIsLoading(true);
+      const studentId = await AsyncStorage.getItem("student_id");
+      if (!studentId) {
+        console.error("Student ID not found in AsyncStorage");
+        setIsLoading(false);
+        return;
+      }
+
+      const response = await fetch(
+        `${Config.API_BASE_URL}/api/student-timesheets?student_id=${studentId}`
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        setTimesheet(data.timesheet);
+        setFilteredData(data.timesheet);
+      } else {
+        console.error("Error fetching timesheet:", data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching timesheet:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = (query: string) => {
-    console.log("Search Query:", query);
-
     setSearchQuery(query);
 
     if (!query.trim()) {
-      console.log("Resetting to full list");
-      setFilteredData(timesheet); // Reset to full list when query is empty
+      setFilteredData(timesheet);
       return;
     }
 
     const lowerCaseQuery = query.toLowerCase();
-
     const filtered = timesheet.filter((item) => {
-      const match =
-        item.date.includes(lowerCaseQuery) ||
+      return (
+        item.date.toLowerCase().includes(lowerCaseQuery) ||
         item.morning.in.toLowerCase().includes(lowerCaseQuery) ||
         item.morning.out.toLowerCase().includes(lowerCaseQuery) ||
         item.afternoon.in.toLowerCase().includes(lowerCaseQuery) ||
-        item.afternoon.out.toLowerCase().includes(lowerCaseQuery);
-
-      if (match) {
-        console.log("Matched item:", item);
-      }
-
-      return match;
+        item.afternoon.out.toLowerCase().includes(lowerCaseQuery) ||
+        item.totalHours.toString().includes(query)
+      );
     });
 
-    console.log("Filtered Data:", filtered);
     setFilteredData(filtered);
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Header
-        title="Search"
+        title="Search Records"
         showBackButton
         onBackPress={() => navigation.goBack()}
       />
@@ -71,49 +99,70 @@ const SearchScreen = () => {
         <TextInput
           autoFocus
           style={styles.searchInput}
-          placeholder="Search Records ..."
+          placeholder="Search date or time"
           value={searchQuery}
           onChangeText={handleSearch}
         />
       </View>
-      <View>
-        {filteredData.length === 0 ? (
-          <Text style={styles.noResultsText}>No records found</Text>
+      <ScrollView style={styles.tableContainer}>
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0b9ca7" />
+            <Text style={styles.loadingText}>Loading records...</Text>
+          </View>
+        ) : filteredData.length === 0 ? (
+          <Text style={styles.noResultsText}>No records found...</Text>
         ) : (
-          filteredData.map((row, index) => {
-            console.log("Rendering row:", row);
-            return (
-              <View key={index} style={styles.rowContainer}>
-                <Text style={styles.cellText}>Date: {row.date}</Text>
-                <Text style={styles.cellText}>
-                  Morning In: {row.morning.in}
-                </Text>
-                <Text style={styles.cellText}>
-                  Morning Out: {row.morning.out}
-                </Text>
-                <Text style={styles.cellText}>
-                  Afternoon In: {row.afternoon.in}
-                </Text>
-                <Text style={styles.cellText}>
-                  Afternoon Out: {row.afternoon.out}
-                </Text>
-                <Text style={styles.cellText}>
-                  Total Hours: {row.totalHours} hrs
-                </Text>
+          <>
+            <View style={styles.tableHeader}>
+              <View style={styles.headerCell}>
+                <Text style={styles.headerText}>Date</Text>
               </View>
-            );
-          })
+              <View style={styles.headerCell}>
+                <Text style={styles.headerText}>1st Period</Text>
+              </View>
+              <View style={styles.headerCell}>
+                <Text style={styles.headerText}>2nd Period</Text>
+              </View>
+              <View style={styles.headerCell}>
+                <Text style={styles.headerText}>Hours</Text>
+              </View>
+            </View>
+
+            {filteredData.map((row, index) => (
+              <View key={index} style={styles.rowContainer}>
+                <View style={styles.cell}>
+                  <Text style={styles.cellText}>{row.date}</Text>
+                </View>
+                <View style={styles.cell}>
+                  <Text style={styles.timeText}>
+                    In: <Text style={styles.inTime}>{row.morning.in}</Text>
+                  </Text>
+                  <Text style={styles.timeText}>
+                    Out: <Text style={styles.outTime}>{row.morning.out}</Text>
+                  </Text>
+                </View>
+                <View style={styles.cell}>
+                  <Text style={styles.timeText}>
+                    In: <Text style={styles.inTime}>{row.afternoon.in}</Text>
+                  </Text>
+                  <Text style={styles.timeText}>
+                    Out: <Text style={styles.outTime}>{row.afternoon.out}</Text>
+                  </Text>
+                </View>
+                <View style={styles.cell}>
+                  <Text style={styles.cellText}>{row.totalHours} hrs</Text>
+                </View>
+              </View>
+            ))}
+          </>
         )}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  noResultsText: {
-    left: 20,
-    top: 10,
-  },
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
@@ -126,19 +175,86 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     marginHorizontal: 15,
+    marginBottom: 10,
   },
   searchInput: {
+    fontSize: 14,
+    fontFamily: "MontserratRegular",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 50,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: "#0b9ca7",
     fontSize: 16,
+    fontFamily: "MontserratRegular",
+  },
+  noResultsText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "#666",
+    fontFamily: "MontserratRegular",
+  },
+  tableContainer: {
+    flex: 1,
+    marginHorizontal: 15,
+    top: 15,
+  },
+  tableHeader: {
+    flexDirection: "row",
+    backgroundColor: "#0b9ca7",
+    paddingVertical: 8,
+    borderRadius: 5,
+    marginBottom: 5,
+  },
+  headerCell: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 12,
+    fontFamily: "MontserratSemiBold",
   },
   rowContainer: {
-    margin: 10,
-    padding: 10,
+    flexDirection: "row",
     backgroundColor: "#fff",
-    borderRadius: 10,
+    paddingVertical: 10,
+    marginBottom: 5,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  cell: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   cellText: {
-    fontSize: 14,
-    marginBottom: 5,
+    fontSize: 12,
+    textAlign: "center",
+    fontFamily: "MontserratRegular",
+  },
+  timeText: {
+    fontSize: 11,
+    textAlign: "center",
+    fontFamily: "MontserratRegular",
+  },
+  inTime: {
+    color: "#0b9ca7",
+    fontWeight: "bold",
+    fontFamily: "MontserratSemiBold",
+  },
+  outTime: {
+    color: "red",
+    fontWeight: "bold",
+    fontFamily: "MontserratSemiBold",
   },
 });
 

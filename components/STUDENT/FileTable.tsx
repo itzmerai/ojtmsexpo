@@ -13,36 +13,48 @@ interface FileTableProps {
 }
 
 const FileTable: React.FC<FileTableProps> = ({ data }) => {
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = {
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const dateOptions: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
       day: "numeric",
+    };
+    const timeOptions: Intl.DateTimeFormatOptions = {
       hour: "2-digit",
       minute: "2-digit",
     };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+
+    return {
+      date: date.toLocaleDateString(undefined, dateOptions),
+      time: date.toLocaleTimeString(undefined, timeOptions),
+    };
   };
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.heading}>Upload History</Text>
 
-      {data.map((document) => (
-        <View key={document.document_id} style={styles.reportContainer}>
-          <Image
-            source={{ uri: document.uploaded_file }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-          <View style={styles.textContainer}>
-            <Text style={styles.dateText}>
-              {formatDate(document.date_uploaded)}
-            </Text>
-            <Text style={styles.remarksText}>{document.remarks}</Text>
+      {data.map((document) => {
+        const { date, time } = formatDateTime(document.date_uploaded);
+        return (
+          <View key={document.document_id} style={styles.reportContainer}>
+            <Image
+              source={{ uri: document.uploaded_file }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+            <View style={styles.textContainer}>
+              <View style={styles.dateTimeContainer}>
+                <Text style={styles.dateText}>{date}</Text>
+                <Text style={styles.separator}> | </Text>
+                <Text style={styles.timeText}>{time}</Text>
+              </View>
+              <Text style={styles.remarksText}>{document.remarks}</Text>
+            </View>
           </View>
-        </View>
-      ))}
+        );
+      })}
     </ScrollView>
   );
 };
@@ -55,8 +67,8 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#000", // Matching theme color
+    fontFamily: "MontserratBold",
+    color: "#000",
     textAlign: "left",
     marginBottom: 0,
     bottom: 15,
@@ -80,27 +92,34 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#f0f0f0",
   },
-  imagePlaceholder: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-    backgroundColor: "#ddd",
-    justifyContent: "center",
-    alignItems: "center",
-  },
   textContainer: {
     flex: 1,
     marginLeft: 10,
   },
+  dateTimeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
   dateText: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 15,
+    fontFamily: "MontserratSemiBold",
     color: "#333",
   },
+  separator: {
+    fontSize: 16,
+    color: "#0b9ca7",
+    marginHorizontal: 4,
+  },
+  timeText: {
+    fontSize: 13,
+    fontFamily: "MontserratSemiBold",
+    color: "blue",
+  },
   remarksText: {
-    fontSize: 14,
-    color: "#555",
-    marginTop: 5,
+    fontSize: 12,
+    color: "#000",
+    fontFamily: "MontserratRegular",
   },
 });
 

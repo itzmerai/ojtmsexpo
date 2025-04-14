@@ -47,7 +47,7 @@ const Explore = () => {
   };
 
   const handleTime = () => {
-    router.push("/Home/Time");
+    router.push("/Home/Task");
   };
 
   return (
@@ -65,8 +65,8 @@ const Explore = () => {
       />
 
       <CustomButton
-        iconName="access-time"
-        buttonText="Time"
+        iconName="assignment"
+        buttonText="Task"
         onPress={handleTime}
       />
 
@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 17,
+    fontFamily: "MontserratRegular",
     color: "#000",
     marginLeft: 20,
   },

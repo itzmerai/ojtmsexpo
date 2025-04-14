@@ -80,10 +80,10 @@ const DTRTable = () => {
           <Text style={styles.headerText}>Date</Text>
         </View>
         <View style={styles.headerCell}>
-          <Text style={styles.headerText}>Morning</Text>
+          <Text style={styles.headerText}>1st Period</Text>
         </View>
         <View style={styles.headerCell}>
-          <Text style={styles.headerText}>Afternoon</Text>
+          <Text style={styles.headerText}>2nd Period</Text>
         </View>
         <View style={styles.headerCell}>
           <Text style={styles.headerText}>Hours</Text>
@@ -138,10 +138,10 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 18,
-    fontWeight: "bold",
     color: "#000",
     textAlign: "left",
     marginBottom: 10,
+    fontFamily: "MontserratBold",
   },
   tableHeader: {
     flexDirection: "row",
@@ -161,10 +161,10 @@ const styles = StyleSheet.create({
     borderRightColor: "#ddd",
   },
   headerText: {
-    fontWeight: "bold",
     textAlign: "center",
-    fontSize: 11,
+    fontSize: 9,
     color: "#fff",
+    fontFamily: "MontserratSemiBold",
   },
   scrollContainer: {
     flex: 1,
@@ -190,14 +190,16 @@ const styles = StyleSheet.create({
   },
   cellText: {
     textAlign: "center",
-    fontSize: 10,
+    fontSize: 8,
+    fontFamily: "MontserratRegular",
   },
   timeCell: {
     alignItems: "flex-start",
   },
   timeText: {
-    fontSize: 8,
+    fontSize: 7,
     textAlign: "left",
+    fontFamily: "MontserratRegular",
   },
   inTime: {
     color: "#0b9ca7",

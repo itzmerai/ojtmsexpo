@@ -186,7 +186,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   monthText: {
-    fontSize: 18,
+    fontSize: 16,
+    backgroundColor: "#0b9ca7",
+    color: "#fff",
+    borderRadius: 5,
+    fontFamily: "MontserratSemiBold",
   },
   arrowContainer: {
     flexDirection: "row",
@@ -203,9 +207,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   weekDayText: {
-    fontSize: 15,
+    fontSize: 14,
     width: 40,
     textAlign: "center",
+    fontFamily: "MontserratSemiBold",
   },
   daysContainer: {
     justifyContent: "space-between",
@@ -218,7 +223,9 @@ const styles = StyleSheet.create({
     margin: 4,
   },
   dayText: {
-    fontSize: 16,
+    fontSize: 15,
+
+    fontFamily: "MontserratRegular",
   },
   todayCircle: {
     width: 30,
@@ -229,7 +236,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   todayText: {
-    color: "#fff", // White text for better contrast
+    color: "white", // White text for better contrast
+    fontWeight: "bold",
   },
   holidaysScrollView: {
     flex: 1, // Allow the ScrollView to take up remaining space
@@ -238,7 +246,8 @@ const styles = StyleSheet.create({
   },
   holidaysTitle: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "MontserratBold",
+
     marginBottom: -15,
     left: 3,
     marginHorizontal: 16,
@@ -246,11 +255,11 @@ const styles = StyleSheet.create({
   },
   dateTitle: {
     fontSize: 18,
-    fontWeight: "bold",
     marginBottom: -2,
     marginHorizontal: 16,
     marginTop: 16,
     left: 3,
+    fontFamily: "MontserratBold",
   },
 });
 

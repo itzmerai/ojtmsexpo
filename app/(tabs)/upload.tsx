@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import FileTable from "@/components/STUDENT/FileTable";
 import AddReportModal from "@/components/STUDENT/AddReportModal";
@@ -25,7 +26,7 @@ interface Document {
 export default function UploadScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [reports, setReports] = useState<Document[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -34,24 +35,31 @@ export default function UploadScreen() {
 
   const fetchDocuments = async () => {
     try {
+      setIsLoading(true);
       const studentId = await AsyncStorage.getItem("student_id");
       if (!studentId) throw new Error("Student ID not found");
 
       const response = await fetch(
         `${Config.API_BASE_URL}/documents?student_id=${studentId}`
       );
-      const data = await response.json();
 
-      if (response.ok) {
-        setReports(data);
-      } else {
-        throw new Error(data.error || "Failed to fetch documents");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        throw new Error(`Expected JSON but got: ${text.substring(0, 100)}`);
+      }
+
+      const data = await response.json();
+      setReports(data);
     } catch (error) {
       console.error("Fetch error:", error);
       Alert.alert("Error", "Failed to load documents");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -75,12 +83,17 @@ export default function UploadScreen() {
       />
 
       <View style={styles.mainContent}>
-        {loading ? (
+        {isLoading ? (
           <View style={styles.loadingContainer}>
-            <Text>Loading documents...</Text>
+            <ActivityIndicator size="large" color="#0b9ca7" />
+            <Text style={styles.loadingText}>Loading uploaded files...</Text>
           </View>
-        ) : (
+        ) : reports.length > 0 ? (
           <FileTable data={reports} />
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No files found</Text>
+          </View>
         )}
       </View>
 
@@ -95,8 +108,6 @@ export default function UploadScreen() {
   );
 }
 
-// Keep existing styles the same
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -107,17 +118,28 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    marginTop: 20, // Adjust based on header height
+    marginTop: 20,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 40,
+    marginBottom: 150,
   },
-  contentContainer: {
+  loadingText: {
+    marginTop: 10,
+    color: "#0b9ca7",
+    fontSize: 16,
+    fontFamily: "MontserratRegular",
+  },
+  emptyContainer: {
     flex: 1,
+    justifyContent: "center",
     alignItems: "center",
-    padding: 10,
-    marginTop: 20,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: "#666",
   },
 });
